@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
+
+<f:section name="FrequentlySearched">
+
+<s:widget.frequentlySearched>
+	<f:if condition="{frequentSearches}">
+
+		<div id="solr-frequent-searches" class="secondaryContentSection">
+			<div class="csc-header">
+				<h3 class="csc-firstHeader"><f:translate key="frequentSearches">Frequently searched</f:translate></h3>
+			</div>
+			<ul>
+				<f:for each="{frequentSearches}" as="searchedForInfo">
+					<li class="{searchedForInfo.class}">
+						<f:link.page additionalParams="{q:searchedForInfo.q}" noCacheHash="1">{searchedForInfo.q}</f:link.page>
+					</li>
+				</f:for>
+			</ul>
+		</div>
+
+	</f:if>
+</s:widget.frequentlySearched>
+
+</f:section>
+
+</html>

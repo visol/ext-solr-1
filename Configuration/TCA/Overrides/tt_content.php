@@ -41,3 +41,10 @@ $pluginCode = 'solr_pi_frequentsearches';
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
 
+
+// Fluid based pluginss
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+	'solr',
+	'Search',
+	'Search result - fluid'
+);

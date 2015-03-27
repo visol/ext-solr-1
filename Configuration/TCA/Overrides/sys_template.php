@@ -1,8 +1,8 @@
 <?php
 
 // TypoScript
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
-    'Configuration/TypoScript/Solr/', 'Search - Base Configuration');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr', 'Configuration/TypoScript/Solr/', 'Search - Base Configuration');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr', 'Configuration/TypoScript/FluidRendering/', 'Search - Fluid rendering (include after Default Configuration)');
 
 // OpenSearch
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',

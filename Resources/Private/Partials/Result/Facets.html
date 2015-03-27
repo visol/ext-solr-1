@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
+
+<f:section name="Facets">
+<div id="solr-faceting">
+
+	<s:facets search="{search}">
+
+		<f:if condition="{usedFacets -> f:count()}">
+			<div id="solr-facets-in-use">
+				<h5>Used facets</h5>
+
+				<ul class="facets">
+					<f:for each="{facets}" as="facet">
+						<f:for each="{facet.selectedOptions}" as="optionValue">
+							<li>-
+								<s:link.removeFacet facet="{facet}" optionValue="{optionValue}">
+									<s:format.facetLabel facet="{facet}" />:
+									<s:format.facetOptionLabel facet="{facet}">{optionValue}</s:format.facetOptionLabel>
+								</s:link.removeFacet>
+							</li>
+						</f:for>
+					</f:for>
+					<li class="facets-remove-all">
+						<f:link.page>Verwijder alle filters</f:link.page>
+					</li>
+				</ul>
+			</div>
+		</f:if>
+
+		<f:if condition="{facets -> f:count()}">
+			<div id="solr-facets-available" class="secondaryContentSection">
+				<div class="csc-header">
+					<h5 class="csc-firstHeader">Resultaat verfijnen</h5>
+				</div>
+				<ul class="facets">
+					<f:for each="{facets}" as="facet">
+						<li class="facet facet-type facet-type-{facet.type}">
+							<s:facet.render facet="{facet}" />
+						</li>
+					</f:for>
+				</ul>
+			</div>
+		</f:if>
+
+	</s:facets>
+
+</div>
+
+</f:section>

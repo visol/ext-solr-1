@@ -45,18 +45,20 @@ class FacetRendererFactory
      * @var array
      */
     protected static $facetTypes = array();
+
+    /**
+     * The default facet render, good for most cases.
+     *
+     * @var string
+     */
+    private $defaultFacetRendererClassName = 'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetFluidRenderer';
+
     /**
      * Facets configuration from plugin.tx_solr.search.faceting.facets
      *
      * @var array
      */
     protected $facetsConfiguration = array();
-    /**
-     * The default facet render, good for most cases.
-     *
-     * @var string
-     */
-    private $defaultFacetRendererClassName = 'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer';
 
     /**
      * Constructor.
@@ -114,6 +116,28 @@ class FacetRendererFactory
     }
 
     /**
+     * Gets the facet's internal type. Uses the renderer class registered for a
+     * facet to get this information.
+     *
+     * @param string $facetName Name of a configured facet.
+     * @return string Internal type of the facet
+     */
+    public function getFacetInternalType($facetName)
+    {
+        $facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
+
+        $facetRendererClassName = $this->defaultFacetRendererClassName;
+        if (isset($facetConfiguration['type'])) {
+            $facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
+        }
+
+        return call_user_func(array(
+            $facetRendererClassName,
+            'getFacetInternalType'
+        ));
+    }
+
+    /**
      * Gets the facet renderer class name for a given facet type.
      *
      * @param string $facetType Facet type
@@ -146,28 +170,6 @@ class FacetRendererFactory
                 1328038100
             );
         }
-    }
-
-    /**
-     * Gets the facet's internal type. Uses the renderer class registered for a
-     * facet to get this information.
-     *
-     * @param string $facetName Name of a configured facet.
-     * @return string Internal type of the facet
-     */
-    public function getFacetInternalType($facetName)
-    {
-        $facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
-
-        $facetRendererClassName = $this->defaultFacetRendererClassName;
-        if (isset($facetConfiguration['type'])) {
-            $facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
-        }
-
-        return call_user_func(array(
-            $facetRendererClassName,
-            'getFacetInternalType'
-        ));
     }
 
     /**
