@@ -38,9 +38,17 @@ class SearchController extends BaseController {
 	 */
 	protected $resultsPerPageChanged = FALSE;
 
+	/**
+	 * Initialize Form action
+	 */
+	protected function initializeFormAction() {
+		$this->initializeAdditionalFilters();
+	}
 
-	protected function initializeSearch() {
-		parent::initializeSearch();
+	/**
+	 * Initialize results action
+	 */
+	protected function initializeResultsAction() {
 		$this->initializeAdditionalFilters();
 		$rawUserQuery = $this->getRawUserQuery();
 
@@ -259,10 +267,9 @@ class SearchController extends BaseController {
 	 * Form
 	 */
 	public function formAction() {
-		$this->search();
 		$this->view->assignMultiple(array(
 			'search' => $this->search,
-			'configuration' => $this->configuration,
+			'additionalFilters' => $this->additionalFilters,
 		));
 	}
 

@@ -108,8 +108,16 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 		}
 		$this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
 
+		// Get search term
+		$q = '';
+		if ($this->search->hasSearched()) {
+			$this->search->getQuery()->getKeywordsCleaned();
+		} elseif (GeneralUtility::_GET('q')) {
+			$q = GeneralUtility::_GET('q');
+		}
+
 		// Render form content
-		$this->templateVariableContainer->add('q', $this->search->getQuery()->getKeywordsCleaned());
+		$this->templateVariableContainer->add('q', $q);
 		$this->templateVariableContainer->add('pageUid', $this->frontendController->id);
 		$this->templateVariableContainer->add('languageUid', $this->frontendController->sys_language_uid);
 		$formContent = $this->renderChildren();
