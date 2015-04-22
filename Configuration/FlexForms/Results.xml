@@ -122,26 +122,5 @@
 				</el>
 			</ROOT>
 		</sQuery>
-		<sOptions>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Options</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<templateFile>
-						<TCEforms>
-							<exclude>1</exclude>
-							<label>Template</label>
-							<config>
-								<type>input</type>
-								<eval>trim</eval>
-								<size>45</size>
-							</config>
-						</TCEforms>
-					</templateFile>
-				</el>
-			</ROOT>
-		</sOptions>
 	</sheets>
 </T3DataStructure>
