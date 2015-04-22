@@ -134,12 +134,11 @@ class SearchController extends BaseController {
 			}
 		}
 
-		// todo: check if needed
-		// flexform overwrites _all_ filters set through TypoScript
-//		$flexformFilters = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
-//		if (!empty($flexformFilters)) {
-//			$additionalFilters = t3lib_div::trimExplode('|', $flexformFilters);
-//		}
+		// FlexForm overwrites _all_ filters set through TypoScript
+		$flexFormFilters = $this->getFieldFromFlexform('filter', 'sQuery');
+		if (!empty($flexFormFilters)) {
+			$additionalFilters = GeneralUtility::trimExplode('|', $flexFormFilters);
+		}
 
 		$this->additionalFilters = $additionalFilters;
 	}

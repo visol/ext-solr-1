@@ -32,6 +32,13 @@ class BaseController extends ActionController {
 	protected $pluginName = 'pi';
 
 	/**
+	 * Flexform information
+	 *
+	 * @var array
+	 */
+	public $flexformData = array();
+
+	/**
 	 * @var ContentObjectRenderer
 	 */
 	protected $contentObjectRenderer;
@@ -88,10 +95,12 @@ class BaseController extends ActionController {
 			(array)$fullTypoScript['plugin.']['tx_solr_pi_results.'] // todo: check what to do with this. Do we need fallback to old typoscript config? define used name by called action?
 		);
 
+		$this->contentObjectRenderer = $this->configurationManager->getContentObject();
+		$this->flexformData = GeneralUtility::xml2array($this->contentObjectRenderer->data['pi_flexform']);
+
 		// todo: add flexform overrides
 		//		$this->overrideTyposcriptWithFlexformSettings();
 
-		$this->contentObjectRenderer = $this->configurationManager->getContentObject();
 	}
 
 	/**
@@ -135,5 +144,26 @@ class BaseController extends ActionController {
 	 */
 	public function getRawUserQuery() {
 		return $this->rawUserQuery;
+	}
+
+	/**
+	 * Get field value from flexform configuration,
+	 * including checks if flexform configuration is available
+	 *
+	 * @param string $key name of the key
+	 * @param string $sheet name of the sheet
+	 * @return string|NULL if nothing found, value if found
+	 */
+	protected function getFieldFromFlexform($key, $sheet = 'sDEF') {
+		$flexform = $this->flexformData;
+		if (isset($flexform['data'])) {
+			$flexform = $flexform['data'];
+			if (is_array($flexform) && is_array($flexform[$sheet]) && is_array($flexform[$sheet]['lDEF'])
+				&& is_array($flexform[$sheet]['lDEF'][$key]) && isset($flexform[$sheet]['lDEF'][$key]['vDEF'])
+			) {
+				return $flexform[$sheet]['lDEF'][$key]['vDEF'];
+			}
+		}
+		return NULL;
 	}
 }
