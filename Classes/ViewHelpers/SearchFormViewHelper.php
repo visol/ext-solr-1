@@ -111,7 +111,7 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 		// Get search term
 		$q = '';
 		if ($this->search->hasSearched()) {
-			$this->search->getQuery()->getKeywordsCleaned();
+			$q = $this->search->getQuery()->getKeywordsCleaned();
 		} elseif (GeneralUtility::_GET('q')) {
 			$q = GeneralUtility::_GET('q');
 		}
