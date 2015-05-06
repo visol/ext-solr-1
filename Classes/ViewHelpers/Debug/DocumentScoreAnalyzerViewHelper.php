@@ -45,9 +45,10 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 		// only check whether a BE user is logged in, don't need to check
 		// for enabled score analysis as we wouldn't be here if it was disabled
 		if (!empty($GLOBALS['TSFE']->beUserLogin)) {
-			$highScores = $this->getHighScores($document->getId());
+			$debugData  = $this->search->getDebugResponse()->explain->{$document->getId()};
+			$highScores = $this->getHighScores($debugData);
 			$score = $document->getField('score');
-			$content = $this->renderScoreAnalysis($highScores, (float)($score ? $score['value'] : 0));
+			$content = $this->renderScoreAnalysis($highScores, (float)($score ? $score['value'] : 0), $debugData);
 		}
 
 		return $content;
@@ -56,12 +57,11 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 	/**
 	 * Get high scores
 	 *
-	 * @param int $id
+	 * @param string $debugData
 	 * @return array
 	 */
-	protected function getHighScores($id) {
+	protected function getHighScores($debugData) {
 		$highScores = array();
-		$debugData  = $this->search->getDebugResponse()->explain->{$id};
 
 		/* TODO Provide better parsing
 		 *
@@ -113,9 +113,10 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 	 *
 	 * @param array $highScores The result document which to analyse
 	 * @param float $realScore
+	 * @param string $debugData
 	 * @return string The HTML showing the score analysis
 	 */
-	protected function renderScoreAnalysis(array $highScores, $realScore) {
+	protected function renderScoreAnalysis(array $highScores, $realScore, $debugData) {
 		$scores = array();
 		$totalScore = 0;
 
@@ -132,13 +133,14 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 			$totalScore += $highScore['score'];
 		}
 
-		$content = '<table style="width: 100%; border: 1px solid #aaa; font-size: 11px; background-color: #eee;">
+		$content = '<table class="document-score-analysis" style="width: 100%; border: 1px solid #aaa; font-size: 11px; background-color: #eee;">
 			<tr style="border-bottom: 2px solid #aaa; font-weight: bold;"><td>Score</td><td>Field</td><td>Boost</td></tr><tr>'
 			. implode('</tr><tr>', $scores)
 			. '</tr>
 			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0px; padding: 0px; margin: 0px;" /></td></tr>
 			<tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr>
 			<tr><td colspan="3">= ' . $realScore . ' (real score)</td></tr>
+			<tr class="raw" style="display:none"><td colspan="3"><pre>' . htmlspecialchars($debugData) . '</pre></td></tr>
 			</table>';
 
 		return $content;
