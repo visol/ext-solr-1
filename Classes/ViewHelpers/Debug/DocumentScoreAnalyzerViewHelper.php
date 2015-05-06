@@ -46,7 +46,8 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 		// for enabled score analysis as we wouldn't be here if it was disabled
 		if (!empty($GLOBALS['TSFE']->beUserLogin)) {
 			$highScores = $this->getHighScores($document->getId());
-			$content = $this->renderScoreAnalysis($highScores);
+			$score = $document->getField('score');
+			$content = $this->renderScoreAnalysis($highScores, (float)($score ? $score['value'] : 0));
 		}
 
 		return $content;
@@ -91,6 +92,18 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 			}
 		}
 
+		// Function query
+		$pattern = '/(.*) = \(MATCH\) FunctionQuery\((.*)\),/';
+		preg_match($pattern, $debugData, $match);
+		if (!empty($match[1])) {
+			$field = 'FunctionQuery (misses boost value)';
+			$highScores[$field] = array(
+				'score'      => $match[1],
+				'field'      => $field,
+				'searchTerm' => $match[2]
+			);
+		}
+
 		return $highScores;
 	}
 
@@ -99,9 +112,10 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 	 * calculated.
 	 *
 	 * @param array $highScores The result document which to analyse
+	 * @param float $realScore
 	 * @return string The HTML showing the score analysis
 	 */
-	protected function renderScoreAnalysis(array $highScores) {
+	protected function renderScoreAnalysis(array $highScores, $realScore) {
 		$scores = array();
 		$totalScore = 0;
 
@@ -124,6 +138,7 @@ class DocumentScoreAnalyzerViewHelper extends AbstractViewHelper {
 			. '</tr>
 			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0px; padding: 0px; margin: 0px;" /></td></tr>
 			<tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr>
+			<tr><td colspan="3">= ' . $realScore . ' (real score)</td></tr>
 			</table>';
 
 		return $content;
