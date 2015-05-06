@@ -28,9 +28,10 @@ class RemoveFacetViewHelper extends FacetViewHelper {
 	 * @param string $optionValue
 	 * @param int $pageUid
 	 * @param bool $returnUrl
+	 * @param string $section The anchor to be added to the url
 	 * @return string
 	 */
-	public function render(\Tx_Solr_Facet_Facet $facet, \Tx_Solr_Facet_FacetOption $facetOption = NULL, $optionValue = NULL, $pageUid = NULL, $returnUrl = FALSE) {
+	public function render(\Tx_Solr_Facet_Facet $facet, \Tx_Solr_Facet_FacetOption $facetOption = NULL, $optionValue = NULL, $pageUid = NULL, $returnUrl = FALSE, $section = '') {
 		if ($facetOption === NULL) {
 			/** @var \Tx_Solr_Facet_FacetOption $facetOption */
 			$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
@@ -43,6 +44,9 @@ class RemoveFacetViewHelper extends FacetViewHelper {
 			$linkBuilder->setLinkTargetPageId($pageUid);
 		}
 		$uri = $linkBuilder->getRemoveFacetOptionUrl();
+		if ($section) {
+			$uri .= '#' . $section;
+		}
 		if (!$returnUrl) {
 			$this->tag->addAttribute('href', $uri, FALSE);
 			$this->tag->setContent($this->renderChildren());

@@ -39,14 +39,18 @@ class FacetViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Link\ActionViewHelper
 	 * @param \Tx_Solr_Facet_FacetOption $facetOption
 	 * @param int $pageUid
 	 * @param bool $returnUrl
+	 * @param string $section The anchor to be added to the url
 	 * @return string
 	 */
-	public function render(\Tx_Solr_Facet_Facet $facet, \Tx_Solr_Facet_FacetOption $facetOption, $pageUid = NULL, $returnUrl = FALSE) {
+	public function render(\Tx_Solr_Facet_Facet $facet, \Tx_Solr_Facet_FacetOption $facetOption, $pageUid = NULL, $returnUrl = FALSE, $section = '') {
 		$linkBuilder = $this->getLinkBuilder($facet, $facetOption);
 		if ($pageUid) {
 			$linkBuilder->setLinkTargetPageId($pageUid);
 		}
 		$uri = $linkBuilder->getAddFacetOptionUrl();
+		if ($section) {
+			$uri .= '#' . $section;
+		}
 		if (!$returnUrl) {
 			$this->tag->addAttribute('href', $uri, FALSE);
 			$this->tag->setContent($this->renderChildren());

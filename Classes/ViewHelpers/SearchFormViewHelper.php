@@ -76,6 +76,7 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 	 * @param integer $pageType type of the target page. See typolink.parameter
 	 * @param boolean $noCache set this to disable caching for the target page. You should not need this.
 	 * @param boolean $noCacheHash set this to supress the cHash query parameter created by TypoLink. You should not need this.
+ 	 * @param string $section The anchor to be added to the action URI (only active if $actionUri is not set)
 	 * @param boolean $absolute If set, the URI of the rendered link is absolute
 	 * @param boolean $addQueryString If set, the current query parameters will be kept in the URI
 	 * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
@@ -83,7 +84,7 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 	 * @param bool $addSuggestUrl
 	 * @return string
 	 */
-	public function render($pageUid = NULL, $additionalFilters = NULL, array $additionalParams = array(), $noCache = FALSE, $pageType = 0, $noCacheHash = FALSE, $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = NULL, $addSuggestUrl = TRUE) {
+	public function render($pageUid = NULL, $additionalFilters = NULL, array $additionalParams = array(), $noCache = FALSE, $pageType = 0, $noCacheHash = FALSE, $section = '', $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = NULL, $addSuggestUrl = TRUE) {
 
 		if ($pageUid === NULL && !empty($this->configuration['search.']['targetPage'])) {
 			$pageUid = (int)$this->configuration['search.']['targetPage'];
@@ -100,6 +101,7 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 			->setAddQueryString($addQueryString)
 			->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
 			->setAddQueryStringMethod($addQueryStringMethod)
+			->setSection($section)
 			->build();
 
 		$this->tag->addAttribute('action', $uri);
