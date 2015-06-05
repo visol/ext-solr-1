@@ -65,7 +65,7 @@ abstract class AbstractFacetFluidRenderer extends \Tx_Solr_Facet_AbstractFacetRe
 		$paths = $this->settings['view']['partialRootPaths'];
 		$this->view->setPartialRootPaths($this->fixPaths($paths ?: array('EXT:solr/Resources/Private/Partials')));
 		$paths = $this->settings['view']['templateRootPaths'];
-		$this->view->setTemplateRootPaths($this->fixPaths($paths ?: array('EXT:solr/Resources/Private/templates')));
+		$this->view->setTemplateRootPaths($this->fixPaths($paths ?: array('EXT:solr/Resources/Private/Templates')));
 	}
 
 	/**
