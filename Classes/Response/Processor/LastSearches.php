@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
+namespace ApacheSolrForTypo3\Solr\Response\Processor;
 
 /***************************************************************
  *  Copyright notice
@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
-
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Logs the keywords from the query into the user's session or the database -
@@ -35,32 +35,62 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
  * @package TYPO3
  * @subpackage solr
  */
-class LastSearches implements ResultSetModifier
+class LastSearches implements ResponseProcessor
 {
 
+    /**
+     * @var string
+     */
     protected $prefix = 'tx_solr';
+
+    /**
+     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected $databaseConnection;
+
+    /**
+     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     */
+    protected $typoScriptFrontendController;
+
+    /**
+     * @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication
+     */
+    protected $feUser;
+
+    /**
+     * @var array
+     */
     protected $configuration;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        // todo: fetch from ControllerContext
+        $this->configuration = Util::getSolrConfiguration();
+        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+        $this->typoScriptFrontendController = $GLOBALS['TSFE'];
+        $this->feUser = $this->typoScriptFrontendController->fe_user;
+    }
 
     /**
      * Does not actually modify the result set, but tracks the search keywords.
      *
-     * (non-PHPdoc)
-     * @see ResultSetModifier::modifyResultSet()
-     * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand
-     * @param array $resultSet
-     * @return array
+     * @param Query $query
+     * @param \Apache_Solr_Response $response
+     * @throws \UnexpectedValueException
      */
-    public function modifyResultSet(
-        ResultsCommand $resultCommand,
-        array $resultSet
+    public function processResponse(
+        Query $query,
+        \Apache_Solr_Response $response
     ) {
-        $this->configuration = $resultCommand->getParentPlugin()->getConfiguration();
-        $keywords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
+        $keywords = $query->getKeywordsCleaned();
 
         $keywords = trim($keywords);
         if (empty($keywords)) {
-            return $resultSet;
+            return;
         }
 
         switch ($this->configuration['search.']['lastSearches.']['mode']) {
@@ -76,8 +106,6 @@ class LastSearches implements ResultSetModifier
                     1342456570
                 );
         }
-
-        return $resultSet;
     }
 
     /**
@@ -88,7 +116,7 @@ class LastSearches implements ResultSetModifier
      */
     protected function storeKeywordsToSession($keywords)
     {
-        $currentLastSearches = $GLOBALS['TSFE']->fe_user->getKey(
+        $currentLastSearches = $this->feUser->getKey(
             'ses',
             $this->prefix . '_lastSearches'
         );
@@ -105,7 +133,7 @@ class LastSearches implements ResultSetModifier
             $newLastSearchesCount = count($lastSearches);
         }
 
-        $GLOBALS['TSFE']->fe_user->setKey(
+        $this->feUser->setKey(
             'ses',
             $this->prefix . '_lastSearches',
             $lastSearches
@@ -122,15 +150,16 @@ class LastSearches implements ResultSetModifier
     {
         $nextSequenceId = $this->getNextSequenceId();
 
-        $GLOBALS['TYPO3_DB']->sql_query(
+        // TODO try to add a execREPLACEquery to t3lib_db
+        $this->databaseConnection->sql_query(
             'INSERT INTO tx_solr_last_searches (sequence_id, tstamp, keywords)
-			VALUES ('
+            VALUES ('
             . $nextSequenceId . ', '
             . time() . ', '
-            . $GLOBALS['TYPO3_DB']->fullQuoteStr($keywords,
+            . $this->databaseConnection->fullQuoteStr($keywords,
                 'tx_solr_last_searches')
             . ')
-			ON DUPLICATE KEY UPDATE tstamp = ' . time() . ', keywords = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($keywords,
+            ON DUPLICATE KEY UPDATE tstamp = ' . time() . ', keywords = ' . $this->databaseConnection->fullQuoteStr($keywords,
                 'tx_solr_last_searches')
         );
     }
@@ -145,7 +174,7 @@ class LastSearches implements ResultSetModifier
         $nextSequenceId = 0;
         $numberOfLastSearchesToLog = $this->configuration['search.']['lastSearches.']['limit'];
 
-        $row = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        $row = $this->databaseConnection->exec_SELECTgetRows(
             '(sequence_id + 1) % ' . $numberOfLastSearchesToLog . ' as next_sequence_id',
             'tx_solr_last_searches',
             '',

@@ -42,7 +42,7 @@ class LastSearchesComponent extends AbstractComponent
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['lastSearches']) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['lastSearches'] = 'ApacheSolrForTypo3\\Solr\\ResultsetModifier\\LastSearches';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['lastSearches'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\LastSearches';
         }
     }
 
