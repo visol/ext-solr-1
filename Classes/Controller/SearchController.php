@@ -14,8 +14,12 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
+use ApacheSolrForTypo3\Solr\Search\QueryAware;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 /**
  * Search Controller
@@ -63,17 +67,16 @@ class SearchController extends BaseController {
 				GeneralUtility::devLog('received search query', 'solr', 0, array($rawUserQuery));
 			}
 
-			/* @var	$query \Tx_Solr_Query */
-			$query = GeneralUtility::makeInstance('Tx_Solr_Query', $rawUserQuery);
+			$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $rawUserQuery);
 
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 			$query->setResultsPerPage($resultsPerPage);
 
-			$searchComponents = GeneralUtility::makeInstance('Tx_Solr_Search_SearchComponentManager')->getSearchComponents();
+			$searchComponents = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search\\SearchComponentManager')->getSearchComponents();
 			foreach ($searchComponents as $searchComponent) {
 				$searchComponent->setSearchConfiguration($this->configuration['search.']);
 
-				if ($searchComponent instanceof \Tx_Solr_QueryAware) {
+				if ($searchComponent instanceof QueryAware) {
 					$searchComponent->setQuery($query);
 				}
 // todo: check for replacement
@@ -152,7 +155,7 @@ class SearchController extends BaseController {
 	 * @return	int	number of results to show per page
 	 */
 	public function getNumberOfResultsPerPage() {
-		$configuration = \Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		$resultsPerPageSwitchOptions = GeneralUtility::intExplode(',', $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
 
 		$solrParameters = $this->request->getArguments();
@@ -223,10 +226,10 @@ class SearchController extends BaseController {
 	/**
 	 * Provides a hook for other classes to process the search's response.
 	 *
-	 * @param	Tx_Solr_Query	The query that has been searched for.
-	 * @param	Apache_Solr_Response	The search's reponse.
+	 * @param	Query	The query that has been searched for.
+	 * @param	\Apache_Solr_Response	The search's reponse.
 	 */
-	protected function processResponse(\Tx_Solr_Query $query, \Apache_Solr_Response $response) {
+	protected function processResponse(Query $query, \Apache_Solr_Response $response) {
 		$rawUserQuery = $this->getRawUserQuery();
 
 		if (($this->configuration['search.']['initializeWithEmptyQuery'] || $this->configuration['search.']['initializeWithQuery'])
@@ -244,7 +247,7 @@ class SearchController extends BaseController {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
 				$responseProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($responseProcessor instanceof \Tx_Solr_ResponseProcessor) {
+				if ($responseProcessor instanceof ResponseProcessor) {
 					$responseProcessor->processResponse($query, $response);
 				}
 			}

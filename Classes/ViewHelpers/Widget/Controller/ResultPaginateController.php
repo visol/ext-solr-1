@@ -15,8 +15,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  */
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+
 
 /**
  * Class ResultPaginateController
@@ -29,7 +28,7 @@ class ResultPaginateController extends AbstractWidgetController {
 	protected $configuration = array('insertAbove' => TRUE, 'insertBelow' => TRUE, 'maximumNumberOfLinks' => 10, 'addQueryStringMethod' => '');
 
 	/**
-	 * @var \Tx_Solr_Search
+	 * @var \ApacheSolrForTypo3\Solr\Search
 	 */
 	protected $search;
 

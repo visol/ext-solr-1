@@ -13,8 +13,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 
 /**
  * Class HighlightResultViewHelper
@@ -29,9 +32,8 @@ class HighlightResultViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render(\Apache_Solr_Document $document, $field) {
-		/** @var \Tx_Solr_Search $search */
-		$search = GeneralUtility::makeInstance('Tx_Solr_Search');
-		$configuration = \Tx_Solr_Util::getSolrConfiguration();
+		$search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+		$configuration = Util::getSolrConfiguration();
 		$content = call_user_func(array($document, 'get' . $field));
 
 		$highlightedContent = $search->getHighlightedContent();

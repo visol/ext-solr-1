@@ -14,7 +14,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 
 /**
  * Class RelevanceViewHelper
@@ -24,11 +26,11 @@ class RelevanceViewHelper extends AbstractViewHelper {
 	/**
 	 * Get document relevance percentage
 	 *
-	 * @param \Tx_Solr_Search $search
+	 * @param Search $search
 	 * @param \Apache_Solr_Document $document
 	 * @return int
 	 */
-	public function render(\Tx_Solr_Search $search, \Apache_Solr_Document $document) {
+	public function render(Search $search, \Apache_Solr_Document $document) {
 
 		$maximumScore = $document->__solr_grouping_groupMaximumScore ?: $search->getMaximumResultScore();
 		$documentScore = $document->getScore();

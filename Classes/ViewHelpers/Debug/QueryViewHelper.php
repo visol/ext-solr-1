@@ -13,8 +13,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
 
 /**
  * Class QueryViewHelper
@@ -22,7 +25,7 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class QueryViewHelper extends AbstractViewHelper {
 
 	/**
-	 * @var \Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -30,7 +33,7 @@ class QueryViewHelper extends AbstractViewHelper {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 	}
 
 	/**

@@ -14,9 +14,12 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
 
 /**
  * Class SearchFormViewHelper
@@ -24,7 +27,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 
 	/**
-	 * @var \Tx_Solr_Search $search
+	 * @var Search $search
 	 */
 	protected $search;
 
@@ -48,9 +51,9 @@ class SearchFormViewHelper extends AbstractTagBasedViewHelper {
 	 */
 	public function __construct() {
 		$this->frontendController =  $GLOBALS['TSFE'];
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 		// todo: fetch from ControllerContext
-		$this->configuration = \Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**

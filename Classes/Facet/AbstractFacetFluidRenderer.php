@@ -6,15 +6,17 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  * Date: 30-03-2015 15:55
  * All code (c) Beech Applications B.V. all rights reserved
  */
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\View\StandaloneView;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException;
+
 
 /**
  * Class AbstractFacetFluidRenderer
  */
-abstract class AbstractFacetFluidRenderer extends \Tx_Solr_Facet_AbstractFacetRenderer implements FacetFluidRendererInterface {
+abstract class AbstractFacetFluidRenderer extends AbstractFacetRenderer implements FacetFluidRendererInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Service\TypoScriptService
@@ -34,22 +36,22 @@ abstract class AbstractFacetFluidRenderer extends \Tx_Solr_Facet_AbstractFacetRe
 	/**
 	 * Constructor
 	 *
-	 * @param \Tx_Solr_Facet_Facet $facet The facet to render.
+	 * @param Facet $facet The facet to render.
 	 */
-	public function __construct(\Tx_Solr_Facet_Facet $facet) {
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+	public function __construct(Facet $facet) {
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->facet              = $facet;
 		$this->facetName          = $facet->getName();
 
-		$this->solrConfiguration  = \Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration  = Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 
 		$this->typoScriptService = GeneralUtility::makeInstance(
 			'TYPO3\\CMS\\Extbase\\Service\\TypoScriptService'
 		);
 		$this->settings = $this->typoScriptService->convertTypoScriptArrayToPlainArray(
-			\Tx_Solr_Util::getSolrConfiguration()
+			Util::getSolrConfiguration()
 		);
 		$this->initView();
 	}

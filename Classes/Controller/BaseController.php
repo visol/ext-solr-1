@@ -21,6 +21,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
+
 /**
  * Class BaseController
  */
@@ -51,14 +52,14 @@ class BaseController extends ActionController {
 	/**
 	 * An instance of Tx_Solr_Search
 	 *
-	 * @var \Tx_Solr_Search
+	 * @var \ApacheSolrForTypo3\Solr\Search
 	 */
 	protected $search;
 
 	/**
 	 * The plugin's query
 	 *
-	 * @var \Tx_Solr_Query
+	 * @var \ApacheSolrForTypo3\Solr\Query
 	 */
 	protected $query = NULL;
 
@@ -126,14 +127,14 @@ class BaseController extends ActionController {
 	 * test the connection through a ping
 	 */
 	protected function initializeSearch() {
-		/** @var \Tx_Solr_ConnectionManager $solrConnection */
-		$solrConnection = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+		/** @var \ApacheSolrForTypo3\Solr\ConnectionManager $solrConnection */
+		$solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 			$this->typoScriptFrontendController->id,
 			$this->typoScriptFrontendController->sys_language_uid,
 			$this->typoScriptFrontendController->MP
 		);
 
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search', $solrConnection);
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
 		$this->solrAvailable = $this->search->ping();
 	}
 

@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+
 /**
  * Fluid based QueryGroup FacetRenderer
  */
@@ -28,21 +29,21 @@ class QueryGroupFacetFluidRenderer extends SimpleFacetFluidRenderer {
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return \Tx_Solr_Facet_Facet::TYPE_QUERY;
+		return Facet::TYPE_QUERY;
 	}
 
 	/**
 	 * Encodes the facet option values from raw Lucene queries to values that
 	 * can be easily used in rendering instructions and URL generation.
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::getFacetOptions()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::getFacetOptions()
 	 * @return array
 	 */
 	public function getFacetOptions() {
 		$facetOptions = array();
 		$facetOptionsRaw = parent::getFacetOptions();
 
-		$filterEncoder = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_QueryGroup');
+		$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup');
 		foreach ($facetOptionsRaw as $facetOption => $numberOfResults) {
 			$facetOption = $filterEncoder->encodeFilter($facetOption, $this->facetConfiguration);
 			$facetOptions[$facetOption] = $numberOfResults;

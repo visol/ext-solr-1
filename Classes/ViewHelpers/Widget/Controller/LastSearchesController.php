@@ -13,8 +13,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+
 
 /**
  * Class LastSearchesController
@@ -36,7 +39,7 @@ class LastSearchesController extends AbstractWidgetController {
 	 */
 	public function __construct() {
 		// todo: fetch from ControllerContext
-		$this->solrConfiguration = \Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration = Util::getSolrConfiguration();
 		$this->databaseConnection = $GLOBALS['DB'];
 	}
 
